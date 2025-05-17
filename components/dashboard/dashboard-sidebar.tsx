@@ -36,7 +36,7 @@ export default function DashboardSidebar() {
   return (
     <>
       {/* Mobile sidebar toggle */}
-      <div className="fixed left-0 top-0 z-40 flex h-16 w-full items-center justify-between border-b bg-background px-4 md:hidden">
+      <div className="sticky left-0 top-0 z-40 flex h-16 w-full items-center justify-between border-b bg-background px-4 md:hidden">
         <div className="flex items-center">
           <Button variant="ghost" size="icon" onClick={toggleSidebar}>
             <Menu className="h-6 w-6" />

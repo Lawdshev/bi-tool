@@ -74,7 +74,7 @@ export default function DashboardPage() {
             <SalesChart data={dashboardData.salesTrends} />
           </CardContent>
         </Card>
-        <Card className="col-span-3">
+        <Card className="col-span-4 md:col-span-3">
           <CardHeader>
             <CardTitle>User Growth</CardTitle>
             <CardDescription>New users per month</CardDescription>
@@ -86,7 +86,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-3">
+        <Card className="col-span-4 md:col-span-3">
           <CardHeader>
             <CardTitle>Category Distribution</CardTitle>
             <CardDescription>Sales by product category</CardDescription>
@@ -95,7 +95,7 @@ export default function DashboardPage() {
             <CategoryDistributionChart data={dashboardData.categoryDistribution} />
           </CardContent>
         </Card>
-        <Card className="col-span-4">
+        <Card className="col-span-4 overflow-hidden">
           <CardHeader>
             <CardTitle>Recent Sales</CardTitle>
             <CardDescription>Latest transactions</CardDescription>
