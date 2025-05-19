@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { User } from "@/types/users";
@@ -29,9 +29,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [inactivityTimer, setInactivityTimer] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
   const router = useRouter();
 
@@ -69,8 +67,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       return () => {
-        if (inactivityTimer) {
-          clearTimeout(inactivityTimer);
+        if (inactivityTimerRef.current) {
+          clearTimeout(inactivityTimerRef.current);
         }
 
         events.forEach((event) => {
@@ -81,12 +79,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user, keepLoggedIn]);
 
   const resetInactivityTimer = () => {
-    if (inactivityTimer) {
-      clearTimeout(inactivityTimer);
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
     }
-
-    // Auto logout after 1 minute of inactivity
-    const newTimer = setTimeout(() => {
+    inactivityTimerRef.current = setTimeout(() => {
       if (!keepLoggedIn) {
         logout();
         toast({
@@ -96,7 +92,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }, 60000);
 
-    setInactivityTimer(newTimer);
   };
 
   const login = async (
@@ -156,11 +151,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const data = await res.json();
 
-      if (!res.ok) {
+      if (!data?.success) {
         toast({
           title: "Registration failed",
           description: data.message,
+          variant: "destructive",
         });
+        return;
       }
 
       toast({

@@ -11,14 +11,14 @@ export async function POST(req: Request) {
 
     if (!fullName || !email || !password || !confirmPassword) {
       return NextResponse.json(
-        { message: "All fields are required" },
+        { message: "All fields are required", success: false },
         { status: 400 }
       );
     }
 
     if (password !== confirmPassword) {
       return NextResponse.json(
-        { message: "Passwords do not match" },
+        { message: "Passwords do not match", success: false },
         { status: 400 }
       );
     }
@@ -35,8 +35,8 @@ export async function POST(req: Request) {
     const existingUser = users.find((user) => user.email === email);
     if (existingUser) {
       return NextResponse.json(
-        { message: "Account with this email already exists" },
-        { status: 409 }
+        { message: "Account with this email already exists", success: false },
+        { status: 400 }
       );
     }
 
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     // Write back to file
     await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), "utf8");
 
-    return NextResponse.json({ message: "Registration successful" });
+    return NextResponse.json({ message: "Registration successful",success: true,data:newUser }, { status: 200 });
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
